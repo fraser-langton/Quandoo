@@ -13,6 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/fraser-langton/Quandoo",
     packages=setuptools.find_packages(),
+    scripts=["Customer.py", "ErrorResponse.py", "Merchant.py", "QuandooModel.py", "Reservation.py"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
