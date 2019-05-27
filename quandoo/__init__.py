@@ -14,11 +14,11 @@ Quandoo API docs:
     docs.quandoo.com (/swagger.html for better docs)
 """
 
-from quandoo.Resources.Customer import Customer
-from quandoo.Resources.ErrorResponse import ErrorResponse
-from quandoo.Resources.Merchant import Merchant
-from quandoo.Resources.QuandooModel import QuandooModel, urljoin
-from quandoo.Resources.Reservation import Reservation
+from quandoo.Customer import Customer
+from quandoo.ErrorResponse import ErrorResponse
+from quandoo.Merchant import Merchant
+from quandoo.QuandooModel import urljoin
+from quandoo.Reservation import Reservation
 
 import requests
 import json

@@ -1,5 +1,5 @@
-from quandoo.Resources.ErrorResponse import ErrorResponse
-from quandoo.Resources.QuandooModel import urljoin, QuandooModel
+from quandoo.ErrorResponse import ErrorResponse
+from quandoo.QuandooModel import urljoin, QuandooModel
 import json
 import requests
 

@@ -1,4 +1,4 @@
-from quandoo.Resources.QuandooModel import QuandooModel
+from quandoo.QuandooModel import QuandooModel
 
 
 class Customer(QuandooModel):

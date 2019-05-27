@@ -1,7 +1,7 @@
-from quandoo.Resources.QuandooModel import QuandooModel, urljoin, get_q_datetime
-from quandoo.Resources.Reservation import Reservation, NewReservation
-from quandoo.Resources.ErrorResponse import ErrorResponse
-from quandoo.Resources.Customer import Customer
+from quandoo.QuandooModel import QuandooModel, urljoin, get_q_datetime
+from quandoo.Reservation import Reservation, NewReservation
+from quandoo.ErrorResponse import ErrorResponse
+from quandoo.Customer import Customer
 import json
 import requests
 from datetime import datetime, date
