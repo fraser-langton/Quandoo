@@ -15,7 +15,7 @@ $ pip install Quandoo
 
 ## Include Quandoo in your application
 ```python
-from Quandoo import quandoo
+import quandoo
 ```
 
 ## Get API Key + Agent ID
