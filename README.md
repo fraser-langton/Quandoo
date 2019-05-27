@@ -66,7 +66,7 @@ Takes a Customer ID:
 customer = agent.get_customer("0bd07451-0c0e-40e9-8429-8a589f59e254")
 print(customer)
 ```
-Returns a Merchant object:
+Returns a Customer object:
 ```commandline
 Customer(
 	id: 0bd07451-0c0e-40e9-8429-8a589f59e254,
@@ -85,7 +85,7 @@ Takes a Reservation ID:
 reservation = agent.get_reservation("77f9dd33-9b24-4a66-a58c-7a059cecba5f")
 print(reservation)
 ```
-Returns a Merchant object:
+Returns a Reservation object:
 ```commandline
 Reservation(
 	id: 77f9dd33-9b24-4a66-a58c-7a059cecba5f,
