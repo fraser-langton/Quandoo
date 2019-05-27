@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="Quandoo",
-    version="1.2.2",
+    version="1.2.3",
     author="Fraser Langton",
     author_email="fraserbasil@gmail.com",
     description="This is a fairly lightwieght SDK for interacting with the Quandoo API, it is a work in progress.",
