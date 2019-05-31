@@ -1,0 +1,3 @@
+Merchant
+    is_available(self, pax: int, date: date, time: str, duration=4)
+    return a boolean if the specific time is available

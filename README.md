@@ -2,9 +2,6 @@
 
 This is a fairly lightwieght SDK for interacting with the Quandoo API, it is a work in progress.
 
-#### Latest Version
-
-The latest version is 1.2.5
 
 ## Installation
 
@@ -34,6 +31,12 @@ To get an Agent instance to Quandoo just provide the X-Quandoo-AuthToken and you
 
 ```python
 agent = quandoo.Agent(oauth_token, agent_id)
+```
+
+To get a test Agent instance be sure to use your test credentials
+
+```python
+agent_test = quandoo.Agent(oauth_token_test, agent_id_test, test=True)
 ```
 
 # Usage

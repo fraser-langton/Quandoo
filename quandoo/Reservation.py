@@ -1,4 +1,4 @@
-from quandoo.Error import ErrorResponse
+from quandoo.Error import PoorResponse
 from quandoo.QuandooModel import urljoin, QuandooModel
 import json
 import requests
@@ -33,7 +33,7 @@ class Reservation(QuandooModel):
             self.status = "CUSTOMER_CANCELED"
             return
 
-        raise ErrorResponse(response.status_code, json.loads(response.text))
+        raise PoorResponse(response.status_code, json.loads(response.text), request)
 
     def reconfirm(self):
         data = {
@@ -49,7 +49,7 @@ class Reservation(QuandooModel):
             self.status = "RECONFIRMED"
             return
 
-        raise ErrorResponse(response.status_code, json.loads(response.text))
+        raise PoorResponse(response.status_code, json.loads(response.text), request)
 
     def change_capacity(self, new_capacity):
         data = {
@@ -65,7 +65,7 @@ class Reservation(QuandooModel):
             self.capacity = new_capacity
             return
 
-        raise ErrorResponse(response.status_code, json.loads(response.text))
+        raise PoorResponse(response.status_code, json.loads(response.text), request)
 
 
 class NewReservation(QuandooModel):

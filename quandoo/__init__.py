@@ -15,7 +15,7 @@ Quandoo API docs:
 """
 
 from quandoo.Customer import Customer
-from quandoo.Error import ErrorResponse
+from quandoo.Error import PoorResponse
 from quandoo.Merchant import Merchant
 from quandoo.QuandooModel import urljoin, PrettyClass
 from quandoo.Reservation import Reservation
@@ -49,7 +49,7 @@ class Agent(PrettyClass):
         if response.status_code == 200:
             return Merchant(json.loads(response.text), self)
 
-        raise ErrorResponse(response.status_code, json.loads(response.text), request)
+        raise PoorResponse(response.status_code, json.loads(response.text), request)
 
     def get_customer(self, customer_id):
         request = urljoin(self.url, "customers", customer_id)
@@ -58,7 +58,7 @@ class Agent(PrettyClass):
         if response.status_code == 200:
             return Customer(json.loads(response.text), self)
 
-        raise ErrorResponse(response.status_code, json.loads(response.text), request)
+        raise PoorResponse(response.status_code, json.loads(response.text), request)
 
     def get_reservation(self, reservation_id):
         request = urljoin(self.url, "reservations", reservation_id)
@@ -67,4 +67,4 @@ class Agent(PrettyClass):
         if response.status_code == 200:
             return Reservation(json.loads(response.text), self)
 
-        raise ErrorResponse(response.status_code, json.loads(response.text), request)
+        raise PoorResponse(response.status_code, json.loads(response.text), request)
