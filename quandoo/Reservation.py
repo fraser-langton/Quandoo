@@ -1,4 +1,4 @@
-from quandoo.ErrorResponse import ErrorResponse
+from quandoo.Error import ErrorResponse
 from quandoo.QuandooModel import urljoin, QuandooModel
 import json
 import requests

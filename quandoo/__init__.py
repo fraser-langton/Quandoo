@@ -15,9 +15,9 @@ Quandoo API docs:
 """
 
 from quandoo.Customer import Customer
-from quandoo.ErrorResponse import ErrorResponse
+from quandoo.Error import ErrorResponse
 from quandoo.Merchant import Merchant
-from quandoo.QuandooModel import urljoin
+from quandoo.QuandooModel import urljoin, PrettyClass
 from quandoo.Reservation import Reservation
 
 import requests
@@ -25,7 +25,7 @@ import json
 from quandoo import config
 
 
-class Agent:
+class Agent(PrettyClass):
     headers = {
         "accept": "application/json",
         "X-Quandoo-AuthToken": None
@@ -35,7 +35,8 @@ class Agent:
         self.oauth_token = oauth_token
         self.agent_id = agent_id
 
-        self.url = urljoin(config.url, config.version)
+        self.url = ""
+        self.production()
         self.headers["X-Quandoo-AuthToken"] = oauth_token
 
     def get_merchant(self, merchant_id):
@@ -45,7 +46,7 @@ class Agent:
         if response.status_code == 200:
             return Merchant(json.loads(response.text), self)
 
-        raise ErrorResponse(response.status_code, json.loads(response.text))
+        raise ErrorResponse(response.status_code, json.loads(response.text), request)
 
     def get_customer(self, customer_id):
         request = urljoin(self.url, "customers", customer_id)
@@ -54,7 +55,7 @@ class Agent:
         if response.status_code == 200:
             return Customer(json.loads(response.text), self)
 
-        raise ErrorResponse(response.status_code, json.loads(response.text))
+        raise ErrorResponse(response.status_code, json.loads(response.text), request)
 
     def get_reservation(self, reservation_id):
         request = urljoin(self.url, "reservations", reservation_id)
@@ -63,4 +64,10 @@ class Agent:
         if response.status_code == 200:
             return Reservation(json.loads(response.text), self)
 
-        raise ErrorResponse(response.status_code, json.loads(response.text))
+        raise ErrorResponse(response.status_code, json.loads(response.text), request)
+
+    def debug(self):
+        self.url = urljoin(config.base_url_test, config.version)
+
+    def production(self):
+        self.url = urljoin(config.base_url, config.version)

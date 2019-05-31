@@ -1,6 +1,6 @@
 from quandoo.QuandooModel import QuandooModel, urljoin, get_q_datetime
 from quandoo.Reservation import Reservation, NewReservation
-from quandoo.ErrorResponse import ErrorResponse
+from quandoo.Error import ErrorResponse
 from quandoo.Customer import Customer
 import json
 import requests
@@ -12,6 +12,7 @@ class Merchant(QuandooModel):
     def __init__(self, data, agent):
         self.id = data["id"]
         self.name = data["name"]
+        self.address = "{number} {street}, {city}, {country}".format(**data["location"]["address"])
 
         self.agent = agent
 

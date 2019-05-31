@@ -1,22 +1,39 @@
-import setuptools
+"""A setuptools based setup module.
+See:
+https://packaging.python.org/guides/distributing-packages-using-setuptools/
+https://github.com/pypa/sampleproject
+"""
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+from setuptools import setup, find_packages
+from os import path
 
-setuptools.setup(
-    name="Quandoo",
-    version="1.2.3",
-    author="Fraser Langton",
-    author_email="fraserbasil@gmail.com",
-    description="This is a fairly lightwieght SDK for interacting with the Quandoo API, it is a work in progress.",
+here = path.abspath(path.dirname(__file__))
+
+with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
+setup(
+    name='Quandoo',
+    version='1.2.3',
+    description="A SDK for interacting with the Quandoo API, it is a work in progress",
     long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/fraser-langton/Quandoo",
-    packages=setuptools.find_packages(),
-    scripts=["quandoo/Customer.py", "quandoo/ErrorResponse.py", "quandoo/Merchant.py", "quandoo/QuandooModel.py", "quandoo/Reservation.py"],
+    long_description_content_type='text/markdown',
+    url='https://github.com/fraser-langton/Quandoo',
+    author='Fraser Langton',
+    author_email='fraserbasil@gmail.com',
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'Topic :: Software Development :: API Tools',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
+    keywords='quandoo api',
+    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
+    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4',
+    install_requires=['requests'],
 )
