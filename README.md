@@ -4,7 +4,7 @@ This is a fairly lightwieght SDK for interacting with the Quandoo API, it is a w
 
 #### Latest Version
 
-The latest version is 1.2.4
+The latest version is 1.2.5
 
 ## Installation
 

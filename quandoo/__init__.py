@@ -31,12 +31,15 @@ class Agent(PrettyClass):
         "X-Quandoo-AuthToken": None
     }
 
-    def __init__(self, oauth_token, agent_id):
+    def __init__(self, oauth_token, agent_id, test=False):
         self.oauth_token = oauth_token
         self.agent_id = agent_id
 
-        self.url = ""
-        self.production()
+        if test:
+            self.url = urljoin(config.base_url_test, config.version)
+        else:
+            self.url = urljoin(config.base_url, config.version)
+
         self.headers["X-Quandoo-AuthToken"] = oauth_token
 
     def get_merchant(self, merchant_id):
@@ -65,9 +68,3 @@ class Agent(PrettyClass):
             return Reservation(json.loads(response.text), self)
 
         raise ErrorResponse(response.status_code, json.loads(response.text), request)
-
-    def debug(self):
-        self.url = urljoin(config.base_url_test, config.version)
-
-    def production(self):
-        self.url = urljoin(config.base_url, config.version)
