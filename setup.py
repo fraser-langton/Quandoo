@@ -14,7 +14,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='Quandoo',
-    version='1.2.3',
+    version='1.2.4',
     description="A SDK for interacting with the Quandoo API, it is a work in progress",
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -24,7 +24,6 @@ setup(
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
-        'Topic :: Software Development :: API Tools',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
