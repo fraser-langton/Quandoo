@@ -26,14 +26,14 @@ agent_id = "<agent_id>"
 
 ## Get Quandoo Agent instance
 
-To get an Agent instance to Quandoo just provide the X-Quandoo-AuthToken and your Agent ID. 
+To get an [Agent](#agent) instance to Quandoo just provide the X-Quandoo-AuthToken and your Agent ID. 
 
 
 ```python
 agent = quandoo.Agent(oauth_token, agent_id)
 ```
 
-To get a test Agent instance be sure to use your test credentials
+To get a test [Agent](#agent) instance be sure to use your test credentials
 
 ```python
 agent_test = quandoo.Agent(oauth_token_test, agent_id_test, test=True)
@@ -53,7 +53,7 @@ Takes a Merchant ID:
 merchant = agent.get_merchant("123456")
 print(merchant)
 ```
-Returns a Merchant object:
+Returns a [Merchant](#merchant) object:
 ```commandline
 Merchant(
 	id: 123456,
@@ -69,7 +69,7 @@ Takes a Customer ID:
 customer = agent.get_customer("0bd07451-0c0e-40e9-8429-8a589f59e254")
 print(customer)
 ```
-Returns a Customer object:
+Returns a [Customer](#customer) object:
 ```commandline
 Customer(
 	id: 0bd07451-0c0e-40e9-8429-8a589f59e254,
@@ -88,7 +88,7 @@ Takes a Reservation ID:
 reservation = agent.get_reservation("77f9dd33-9b24-4a66-a58c-7a059cecba5f")
 print(reservation)
 ```
-Returns a Reservation object:
+Returns a [Reservation](#reservation) object:
 ```commandline
 Reservation(
 	id: 77f9dd33-9b24-4a66-a58c-7a059cecba5f,
@@ -115,7 +115,7 @@ merchant = agent.get_merchant(merchant_id)
 customers = merchant.get_customers()
 print(customers)
 ```
-Returns a list of Customer objects:
+Returns a list of [Customer](#customer) objects:
 ```commandline
 [
     Customer(
@@ -143,7 +143,7 @@ reservations = merchant.get_reservations()
 print(reservations)
 ```
 
-Returns a list of Reservation objects:
+Returns a list of [Reservation](#reservation) objects:
 
 ```commandline
 [
@@ -169,184 +169,144 @@ Returns a list of Reservation objects:
 
 #### Get Available Times
 
-Takes a capacity for the reservation as well as the date (as a date object) and time (24 hour time as a string with increments of 15 minutes)
+Takes a capacity for the reservation as well as the [QuandooDatetime](#quandoodatetime)
 
 ```python
 capacity = 2
-test_date = date(year=2019, month=6, day=1)
-test_time = "12:00"
+res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
 
-avail_times = merchant.get_available_times(capacity, test_date, test_time)
+avail_times = merchant.get_available_times(capacity, res_datetime)
 print(avail_times)
 ```
 
-Currently returns the direct API response to parse as necessary
+Returns list of [QuandooDatetime](#quandoodatetime) objects
 
 ```commandline
-{
-  "timeSlots": [
-    {
-      "dateTime": "2019-06-01T12:00:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T12:15:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T12:30:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T12:45:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T13:00:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T13:15:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T13:30:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T13:45:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T14:00:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T14:15:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T14:30:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T14:45:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T15:00:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T15:15:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T15:30:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T15:45:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    },
-    {
-      "dateTime": "2019-06-01T16:00:00+10:00",
-      "occupancy": 0,
-      "areaIds": [
-        34333
-      ]
-    }
-  ],
-  "vaultSettings": [],
-  "links": [
-    {
-      "href": "https://test-9250-api.quandoo.com/v1/merchants/123456",
-      "method": "GET",
-      "rel": "parent"
-    },
-    {
-      "href": "https://test-9250-api.quandoo.com/v1/merchants/123456/reservation-settings",
-      "method": "GET",
-      "rel": "reservation-settings"
-    },
-    {
-      "href": "https://test-9250-api.quandoo.com/v1/reservations",
-      "method": "PUT",
-      "rel": "create-reservation"
-    }
-  ]
-}
+[
+	QuandooDatetime(
+		datetime: 2019-07-01 12:00:00+10:00,
+		q_datetime: 2019-07-01T12:00:00+10:00,
+		pretty_date: 12:00 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 12:15:00+10:00,
+		q_datetime: 2019-07-01T12:15:00+10:00,
+		pretty_date: 12:15 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 12:30:00+10:00,
+		q_datetime: 2019-07-01T12:30:00+10:00,
+		pretty_date: 12:30 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 12:45:00+10:00,
+		q_datetime: 2019-07-01T12:45:00+10:00,
+		pretty_date: 12:45 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 13:00:00+10:00,
+		q_datetime: 2019-07-01T13:00:00+10:00,
+		pretty_date: 1:00 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 13:15:00+10:00,
+		q_datetime: 2019-07-01T13:15:00+10:00,
+		pretty_date: 1:15 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 13:30:00+10:00,
+		q_datetime: 2019-07-01T13:30:00+10:00,
+		pretty_date: 1:30 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 13:45:00+10:00,
+		q_datetime: 2019-07-01T13:45:00+10:00,
+		pretty_date: 1:45 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 14:00:00+10:00,
+		q_datetime: 2019-07-01T14:00:00+10:00,
+		pretty_date: 2:00 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 14:15:00+10:00,
+		q_datetime: 2019-07-01T14:15:00+10:00,
+		pretty_date: 2:15 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 14:30:00+10:00,
+		q_datetime: 2019-07-01T14:30:00+10:00,
+		pretty_date: 2:30 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 14:45:00+10:00,
+		q_datetime: 2019-07-01T14:45:00+10:00,
+		pretty_date: 2:45 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 15:00:00+10:00,
+		q_datetime: 2019-07-01T15:00:00+10:00,
+		pretty_date: 3:00 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 15:15:00+10:00,
+		q_datetime: 2019-07-01T15:15:00+10:00,
+		pretty_date: 3:15 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 15:30:00+10:00,
+		q_datetime: 2019-07-01T15:30:00+10:00,
+		pretty_date: 3:30 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 15:45:00+10:00,
+		q_datetime: 2019-07-01T15:45:00+10:00,
+		pretty_date: 3:45 PM, Mon 1 July 2019
+	), 
+	QuandooDatetime(
+		datetime: 2019-07-01 16:00:00+10:00,
+		q_datetime: 2019-07-01T16:00:00+10:00,
+		pretty_date: 4:00 PM, Mon 1 July 2019
+	)]
+```
+
+#### Check if specific time is available
+
+Takes a capacity for the reservation as well as the [QuandooDatetime](#quandoodatetime)
+
+```python
+capacity = 2
+res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
+
+avail_times = merchant.is_available(capacity, res_datetime)
+print(avail_times)
+```
+
+Returns a boolean
+
+```commandline
+True
 ```
 
 #### Create Reservation
 
-Takes a customer and capacity for the reservation as well as the date (as a date object) and time (24 hour time as a string with increments of 15 minutes), with an option to include duration*.
+Takes a [Customer](#customer) and capacity for the reservation as well as the [QuandooDatetime](#quandoodatetime)
 
 ```python
-merchant = agent.get_merchant(merchant_id)
 customer = agent.get_customer(customer_id)
 capacity = 2
-test_date = date(2019, 6, 1)
-test_time = "12:00"
+res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
 
-new_reservation = merchant.create_reservation(customer, capacity, test_date, test_time, duration=2)
-print(new_reservation)
+new_res = merchant.create_reservation(customer, capacity, res_datetime)
+print(new_res)
 ```
 
-Returns a NewReservation object:
+Returns a [NewReservation](#newreservation) object:
 
 ```commandline
 NewReservation(
-	id: a1584003-bb70-451c-aa52-0ad58454faf8,
-	number: 13096116,
+	id: b97d9da6-b38f-4089-8456-514201dc94d5,
+	number: 13096703,
 	status: AUTOMATIC_CONFIRMED,
 	customerId: 0bd07451-0c0e-40e9-8429-8a589f59e254
 )
@@ -418,17 +378,15 @@ Similar to Reservation, it is what is returned on Reservation creation.
 Takes nothing:
 
 ```python
-merchant = agent.get_merchant(merchant_id)
 customer = agent.get_customer(customer_id)
 capacity = 2
-test_date = date(2019, 6, 1)
-test_time = "12:00"
+res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
 
-new_reservation = merchant.create_reservation(customer, capacity, test_date, test_time, duration=2)
+new_reservation = merchant.create_reservation(customer, capacity, res_datetime)
 new_reservation_full = new_reservation.get_reservation()
 print(new_reservation_full)
 ```
-Returns a Reservation object:
+Returns a [Reservation](#reservation) object:
 ```commandline
 Reservation(
 	id: a1584003-bb70-451c-aa52-0ad58454faf8,
@@ -439,4 +397,95 @@ Reservation(
 	merchantId: 123456,
 	customerId: 0bd07451-0c0e-40e9-8429-8a589f59e254
 )
+```
+
+## QuandooDatetime
+
+A datetime class with extra functionality useful to Quandoo, ie a time resolution of 15 minutes
+
+#### Get specfic time
+
+Takes usual [datetime](https://docs.python.org/3/library/datetime.html) paramters, but has a time resolution of 15 minutes
+
+```python
+qdt = res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
+print(qdt)
+```
+
+Returns a [QuandooDatetimeObject](#quandoodatetime)
+
+```commandline
+QuandooDatetime(
+	datetime: 2019-07-01 12:00:00+10:00,
+	q_datetime: 2019-07-01T12:00:00+10:00,
+	pretty_date: 12:00 PM, Mon 1 July 2019
+)
+```
+
+#### Get current time
+
+Takes nothing:
+
+```python
+qdt = QuandooDatetime.now()
+print(qdt)
+```
+
+Returns a [QuandooDatetimeObject](#quandoodatetime)
+
+```commandline
+QuandooDatetime(
+	datetime: 2019-06-03 22:45:00+10:00,
+	q_datetime: 2019-06-03T22:45:00+10:00,
+	pretty_date: 10:45 PM, Mon 3 June 2019
+)
+```
+
+#### Parse time returned by Quandoo API
+
+Takes a string:
+
+```python
+qdt = QuandooDatetime.parse_str_qdt("2019-07-01T12:00:00+10:00")
+print(qdt)
+```
+
+Returns a [QuandooDatetimeObject](#quandoodatetime)
+
+```commandline
+QuandooDatetime(
+	datetime: 2019-07-01 12:00:00+10:00,
+	q_datetime: 2019-07-01T12:00:00+10:00,
+	pretty_date: 12:00 PM, Mon 1 July 2019
+)
+```
+
+#### Get Quandoo formatted datetime string
+
+Takes nothing:
+
+```python
+qdt = res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
+print(qdt.get_qdt())
+```
+
+Returns a Quandoo formatted datetime string
+
+```commandline
+2019-07-01T12:00:00+10:00
+```
+
+#### Get formatted datetime string that reads well
+
+Takes nothing:
+
+```python
+qdt = res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
+print(qdt.pretty_date())
+```
+
+Returns a formatted datetime string that reads well
+
+```commandline
+12:00 PM, Mon 1 July 2019
 ```

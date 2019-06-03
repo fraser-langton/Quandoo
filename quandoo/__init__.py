@@ -1,9 +1,6 @@
 """
 Unofficial library, still in progress
 
-Version:
- 1.2.0
-
 Author(s):
     Fraser Langton <fraserbasil@gmail.com>
 
@@ -14,15 +11,16 @@ Quandoo API docs:
     docs.quandoo.com (/swagger.html for better docs)
 """
 
+import json
+
+import requests
+
+from quandoo import config
 from quandoo.Customer import Customer
 from quandoo.Error import PoorResponse
 from quandoo.Merchant import Merchant
 from quandoo.QuandooModel import urljoin, PrettyClass
 from quandoo.Reservation import Reservation
-
-import requests
-import json
-from quandoo import config
 
 
 class Agent(PrettyClass):

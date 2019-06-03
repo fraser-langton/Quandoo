@@ -11,7 +11,7 @@ class QuandooException(Exception):
 class APIException(QuandooException):
 
     def __init__(self, status_code, response, request):
-        super().__init__(status_code + " " + response["errorType"], response["errorMessage"])
+        super().__init__("{} {}".format(status_code, response["errorType"]), response["errorMessage"])
         self.request = request
 
 

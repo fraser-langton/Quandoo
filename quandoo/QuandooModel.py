@@ -1,6 +1,7 @@
 import json
-from datetime import datetime
-from quandoo.Error import PoorType
+import sys
+import time
+from datetime import datetime as dt, timezone, timedelta
 
 
 class PrettyClass:
@@ -32,41 +33,61 @@ class QuandooModel(PrettyClass):
 
 
 class QuandooDatetime(PrettyClass):
+    TIME_RESOLUTION = 15  # minutes
 
-    def __init__(self, data):
-        self.datetime = data
-        self.datetime = self.get_datetime()
+    def __init__(self, year, month=None, day=None, hour=0, minute=0, second=0, microsecond=0, tzinfo=None):
+        second = microsecond = 0
+        if not tzinfo:
+            tzinfo = timezone(timedelta(seconds=-time.timezone))
 
-        if type(self.datetime) != datetime:
-            raise PoorType("Not a datetime object, input must be either a datetime object or quandoo datetime in form: %Y-%m-%dT%H:%M:%S%z", str(data))
+        self.datetime = dt(year, month, day, hour, minute, second, microsecond, tzinfo)
+        self.__resolve_time()
 
     def __str__(self):
         useful_attrs = ["{}: {}".format(key, val) for key, val in self.__dict__.items() if
-                        key not in self.useless_attrs] + ["{}: {}".format("q_datetime", self.get_q_datetime()),
-                                                          "{}: {}".format("pretty_date", self.longdate())]
+                        key not in self.useless_attrs] + ["{}: {}".format("q_datetime", self.get_qdt()),
+                                                          "{}: {}".format("pretty_date", self.pretty_date())]
 
         return "{}(\n\t{}\n)".format(
             self.__class__.__name__,
             ",\n\t".join(useful_attrs)
         )
 
-    def get_q_datetime(self):
-        if type(self.datetime) == datetime:
-            return datetime.strftime(self.datetime, "%Y-%m-%dT%H:%M:%S%z") + "+10:00"
-        return self.datetime
+    def __eq__(self, other):
+        return self.datetime == other.datetime
 
-    def get_datetime(self):
-        if type(self.datetime) == str:
-            d = self.datetime.split("+")
-            d[1] = d[1].replace(":", "")
-            return datetime.strptime("+".join(d), "%Y-%m-%dT%H:%M:%S%z")
-        return self.datetime
+    def __lt__(self, other):
+        return self.datetime > other.datetime
 
-    def longdate(self):
-        return self.datetime.strftime("%I:%M %p, %a %d %B, %Y")
+    @staticmethod
+    def now():
+        y, m, d, h, i, *_ = dt.now().timetuple()
+        return QuandooDatetime(y, m, d, h, i)
 
-    def shortdate(self):
-        return self.datetime.strftime("%d/%m/%y")
+    @staticmethod
+    def parse_str_qdt(string):
+        d = string.split("+")
+        d[1] = d[1].replace(":", "")
+        y, m, d, h, i, *_ = dt.strptime("+".join(d), "%Y-%m-%dT%H:%M:%S%z").timetuple()
+        return QuandooDatetime(y, m, d, h, i)
+
+    def __resolve_time(self):
+        y, m, d, h, i, *_ = self.datetime.timetuple()
+        i = ((i // QuandooDatetime.TIME_RESOLUTION) * QuandooDatetime.TIME_RESOLUTION)
+
+        self.datetime = dt(y, m, d, h, i, tzinfo=self.datetime.tzinfo)
+
+    def get_qdt(self):
+        return dt.strftime(self.datetime, "%Y-%m-%dT%H:%M:%S{}".format(str(self.datetime.tzinfo)[-6:]))
+
+    def pretty_date(self):
+        if sys.platform.startswith("win"):
+            token = "#"
+        elif sys.platform.startswith("linux"):
+            token = "-"
+        else:
+            token = ""
+        return self.datetime.strftime("%{token}I:%M %p, %a %{token}d %B %Y".format(**{"token": token}))
 
 
 def urljoin(*argv):
@@ -75,4 +96,3 @@ def urljoin(*argv):
 
 def indent(string, indent_amount=1):
     return "\n".join(["\t" * indent_amount + line for line in string.split("\n")])
-
