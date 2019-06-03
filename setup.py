@@ -8,14 +8,12 @@ from os import path
 
 from setuptools import setup, find_packages
 
-here = path.abspath(path.dirname(__file__))
-
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(path.join(path.abspath(path.dirname(__file__)), 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
     name='Quandoo',
-    version='1.2.7',
+    version='1.3.0',
     description="A SDK for interacting with the Quandoo API, it is a work in progress",
     long_description=long_description,
     long_description_content_type='text/markdown',
