@@ -1,1 +1,2 @@
 // TO DO
+change Customer locale from hard coded -> locale.getdefaultlocale()[0]
