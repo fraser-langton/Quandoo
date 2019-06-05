@@ -2,6 +2,11 @@
 change Customer locale from hard coded -> locale.getdefaultlocale()[0]
 
 introduce parameters to Merchant.get_reservations()
-  is_future=True
-  is_confirmed=True
-  limit=100
+    is_future=True
+    is_confirmed=True
+    limit=100
+
+@staticmethod
+def parse_pretty_qdt(string):
+    y, m, d, h, i, *_ = dt.strptime(string, "%I:%M %p, %a %d %B %Y").timetuple()
+    return QuandooDatetime(y, m, d, h, i)
