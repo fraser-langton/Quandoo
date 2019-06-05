@@ -1,2 +1,7 @@
 // TO DO
 change Customer locale from hard coded -> locale.getdefaultlocale()[0]
+
+introduce parameters to Merchant.get_reservations()
+  is_future=True
+  is_confirmed=True
+  limit=100
