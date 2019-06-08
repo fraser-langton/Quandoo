@@ -59,7 +59,7 @@ class Merchant(QuandooModel):
         if area_id is not None:
             params["areaId"] = area_id
 
-        request = urljoin(self.agent.url, "merchants", self.id, "availabilities", qdt.datetime.strftime("%Y-%m-%d"))
+        request = urljoin(self.agent.url, "merchants", self.id, "availabilities", qdt.datetime.strftime("%Y-%m-%d"), "times")
         response = requests.get(request, headers=self.agent.headers, params=params)
 
         if response.status_code == 200:

@@ -9,7 +9,6 @@ from quandoo.QuandooModel import urljoin, QuandooModel, QuandooDatetime
 class Reservation(QuandooModel):
 
     def __init__(self, data, agent):
-        print(json.dumps(data, indent=2))
         self.id = data["id"]
         self.status = data["status"]
         self.date = QuandooDatetime.parse_str_qdt(data["startTime"])
