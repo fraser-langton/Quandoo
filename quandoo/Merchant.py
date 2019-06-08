@@ -98,4 +98,3 @@ class Merchant(QuandooModel):
             return NewReservation(json.loads(response.text), self.agent)
 
         raise PoorResponse(response.status_code, json.loads(response.text), request)
-
