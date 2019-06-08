@@ -71,6 +71,11 @@ class QuandooDatetime(PrettyClass):
         y, m, d, h, i, *_ = dt.strptime("+".join(d), "%Y-%m-%dT%H:%M:%S%z").timetuple()
         return QuandooDatetime(y, m, d, h, i)
 
+    @staticmethod
+    def parse_pretty_qdt(string):
+        y, m, d, h, i, *_ = dt.strptime(string, "%I:%M %p, %a %d %B %Y").timetuple()
+        return QuandooDatetime(y, m, d, h, i)
+
     def __resolve_time(self):
         y, m, d, h, i, *_ = self.datetime.timetuple()
         i = ((i // QuandooDatetime.TIME_RESOLUTION) * QuandooDatetime.TIME_RESOLUTION)
@@ -79,6 +84,9 @@ class QuandooDatetime(PrettyClass):
 
     def get_qdt(self):
         return dt.strftime(self.datetime, "%Y-%m-%dT%H:%M:%S{}".format(str(self.datetime.tzinfo)[-6:]))
+
+    def get_urldt(self):
+        return self.datetime.strftime("%Y-%m-%d %H:%M:%S")
 
     def pretty_date(self):
         if sys.platform.startswith("win"):

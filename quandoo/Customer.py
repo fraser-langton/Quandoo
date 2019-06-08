@@ -1,3 +1,5 @@
+import locale
+
 from quandoo.QuandooModel import QuandooModel
 
 
@@ -18,6 +20,6 @@ class Customer(QuandooModel):
             "lastName": self.lastName,
             "emailAddress": self.email,
             "phoneNumber": self.phoneNumber,
-            "locale": "en_AU",
-            "country": "AU"
+            "locale": locale.getdefaultlocale()[0],
+            "country": locale.getdefaultlocale()[0][-2:]
         }

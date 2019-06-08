@@ -1,16 +1,20 @@
-from quandoo.Error import PoorResponse
-from quandoo.QuandooModel import urljoin, QuandooModel
 import json
+
 import requests
+
+from quandoo.Error import PoorResponse
+from quandoo.QuandooModel import urljoin, QuandooModel, QuandooDatetime
 
 
 class Reservation(QuandooModel):
 
     def __init__(self, data, agent):
+        print(json.dumps(data, indent=2))
         self.id = data["id"]
         self.status = data["status"]
-        self.startTime = data["startTime"]
-        self.endTime = data["endTime"]
+        self.date = QuandooDatetime.parse_str_qdt(data["startTime"])
+        self.startTime = QuandooDatetime.parse_str_qdt(data["startTime"])
+        self.endTime = QuandooDatetime.parse_str_qdt(data["endTime"])
         self.capacity = data["capacity"]
         self.merchantId = data["merchantId"]
         self.customerId = data["customerId"]
@@ -18,6 +22,22 @@ class Reservation(QuandooModel):
         self.agent = agent
 
         super().__init__(data)
+
+    def __str__(self):
+        useful_attrs = []
+        for key, val in self.__dict__.items():
+            if key not in self.useless_attrs:
+                if type(val) == QuandooDatetime:
+                    if key == "date":
+                        val = val.pretty_date().split(", ")[-1]
+                    else:
+                        val = val.pretty_date().split(", ")[0]
+                useful_attrs.append("{}: {}".format(key, val))
+
+        return "{}(\n\t{}\n)".format(
+            self.__class__.__name__,
+            ",\n\t".join(useful_attrs)
+        )
 
     def cancel(self):
         data = {

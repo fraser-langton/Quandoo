@@ -13,7 +13,7 @@ with open(path.join(path.abspath(path.dirname(__file__)), 'README.md'), encoding
 
 setup(
     name='Quandoo',
-    version='1.3.0',
+    version='1.3.1',
     description="A SDK for interacting with the Quandoo API, it is a work in progress",
     long_description=long_description,
     long_description_content_type='text/markdown',

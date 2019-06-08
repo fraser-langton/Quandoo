@@ -91,13 +91,14 @@ print(reservation)
 Returns a [Reservation](#reservation) object:
 ```commandline
 Reservation(
-	id: 77f9dd33-9b24-4a66-a58c-7a059cecba5f,
-	status: AUTOMATIC_CONFIRMED,
-	startTime: 2019-07-01T12:00:00+10:00,
-	endTime: 2019-07-01T13:30:00+10:00,
-	capacity: 2,
-	merchantId: 123456,
-	customerId: 0bd07451-0c0e-40e9-8429-8a589f59e254
+    id: 1e346889-7819-4648-85c3-500a075bd470,
+    status: MERCHANT_CANCELED,
+    date: Mon 20 January 2020,
+    startTime: 12:00 PM,
+    endTime: 3:00 PM,
+    capacity: 2,
+    merchantId: 49295,
+    customerId: 4d3f588b-3dc7-4a9c-bcf2-399cb8dcce68
 )
 ```
 
@@ -136,10 +137,10 @@ Returns a list of [Customer](#customer) objects:
 
 #### Get Reservations
 
-Takes nothing
+Takes optional: limit, earliest, latest
 
 ```python
-reservations = merchant.get_reservations()
+reservations = merchant.get_reservations(limit=2, earliest=QuandooDatetime(2020, 1, 20), latest=QuandooDatetime(2020, 2, 2))
 print(reservations)
 ```
 
@@ -148,28 +149,31 @@ Returns a list of [Reservation](#reservation) objects:
 ```commandline
 [
 	Reservation(
-		id: f140dcb3-a318-400c-9767-6a6bd93c5e69,
-		status: AUTOMATIC_CONFIRMED,
-		startTime: 2019-06-01T10:00:00+10:00,
-		endTime: 2019-06-01T11:30:00+10:00,
-		capacity: 4,
-		merchantId: 123456,
-		customerId: 0bd07451-0c0e-40e9-8429-8a589f59e254
+		id: 1e346889-7819-4648-85c3-500a075bd470,
+		status: MERCHANT_CANCELED,
+		date: Mon 20 January 2020,
+		startTime: 12:00 PM,
+		endTime: 3:00 PM,
+		capacity: 2,
+		merchantId: 49295,
+		customerId: 4d3f588b-3dc7-4a9c-bcf2-399cb8dcce68
 	), 
 	Reservation(
-		id: 886021e2-5202-42a4-aaba-c6c83c520600,
-		status: AUTOMATIC_CONFIRMED,
-		startTime: 2019-06-01T12:00:00+10:00,
-		endTime: 2019-06-01T13:30:00+10:00,
-		capacity: 2,
-		merchantId: 123456,
-		customerId: 0bd07451-0c0e-40e9-8429-8a589f59e254
+		id: 2af875ba-a01e-4721-8988-96bbcc5f4863,
+		status: MERCHANT_CANCELED,
+		date: Mon 20 January 2020,
+		startTime: 12:00 PM,
+		endTime: 3:00 PM,
+		capacity: 6,
+		merchantId: 49295,
+		customerId: e4f5d267-6891-4e48-9632-b8de038bbd45
 	)]
 ```
 
 #### Get Available Times
 
-Takes a capacity for the reservation as well as the [QuandooDatetime](#quandoodatetime)
+Takes a capacity for the reservation as well as the [QuandooDatetime](#quandoodatetime).
+Optional: duration=2, area_id
 
 ```python
 capacity = 2
@@ -290,7 +294,8 @@ True
 
 #### Create Reservation
 
-Takes a [Customer](#customer) and capacity for the reservation as well as the [QuandooDatetime](#quandoodatetime)
+Takes a [Customer](#customer), capacity for the reservation as well as the [QuandooDatetime](#quandoodatetime). 
+Optional: area_id, order_id, extra_info
 
 ```python
 customer = agent.get_customer(customer_id)
@@ -389,13 +394,14 @@ print(new_reservation_full)
 Returns a [Reservation](#reservation) object:
 ```commandline
 Reservation(
-	id: a1584003-bb70-451c-aa52-0ad58454faf8,
+	id: 5da65435-3654-4627-8526-f544d4b9abef,
 	status: AUTOMATIC_CONFIRMED,
-	startTime: 2019-06-01T12:00:00+10:00,
-	endTime: 2019-06-01T13:30:00+10:00,
+	date: Mon 1 July 2019,
+	startTime: 12:00 PM,
+	endTime: 3:00 PM,
 	capacity: 2,
-	merchantId: 123456,
-	customerId: 0bd07451-0c0e-40e9-8429-8a589f59e254
+	merchantId: 49295,
+	customerId: fa78b27a-e050-4c7e-83c1-1e14e1506fda
 )
 ```
 
