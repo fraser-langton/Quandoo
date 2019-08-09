@@ -15,9 +15,21 @@ $ pip install Quandoo
 import quandoo
 ```
 
+## Check API status
+
+```python
+quandoo.status()
+quandoo.status_test()
+```
+
+```commandline
+200
+200
+```
+
 ## Get API Key + Agent ID
 
-These are obtained directly from a Quandoo representative. [Quandoo docs on authentication.](https://docs.quandoo.com/specs/documentation/authentication.html)
+These are obtained directly from a Quandoo representative. [Quandoo docs on authentication.](https://docs.quandoo.com/authentication-and-attribution/)
 
 ```python
 oauth_token = "<oauth_token>"
@@ -40,18 +52,16 @@ agent_test = quandoo.Agent(oauth_token_test, agent_id_test, test=True)
 ```
 
 # Usage
-
 ## Agent
 
-[Quandoo Docs](https://docs.quandoo.com/specs/domain/agent.html): *"For Quandoo to attribute reservations correctly, we implement something called agent id (aid) tracking. This will be issued to you at the same time as you receive your Auth token. On urls to the portal or widget the aid is set on the given url automatically (based on the authtoken) and is stored for the duration of the browsing session only. When a reservation is made, the aid will be passed and stored with the reservation. With direct API reservations, agent_id must be specified in the request body."*
+See [Quandoo Docs](https://docs.quandoo.com/quandoo-terminology/)
 
 #### Get Merchant
 
 Takes a Merchant ID:
 
 ```python
-merchant = agent.get_merchant("123456")
-print(merchant)
+agent.get_merchant("123456")
 ```
 Returns a [Merchant](#merchant) object:
 ```commandline
@@ -66,8 +76,7 @@ Merchant(
 Takes a Customer ID:
 
 ```python
-customer = agent.get_customer("0bd07451-0c0e-40e9-8429-8a589f59e254")
-print(customer)
+agent.get_customer("0bd07451-0c0e-40e9-8429-8a589f59e254")
 ```
 Returns a [Customer](#customer) object:
 ```commandline
@@ -78,6 +87,7 @@ Customer(
 	email: fraserbasil@mail.com,
 	phoneNumber: +614111222333
 )
+
 ```
 
 #### Get Reservation
@@ -85,8 +95,7 @@ Customer(
 Takes a Reservation ID:
 
 ```python
-reservation = agent.get_reservation("77f9dd33-9b24-4a66-a58c-7a059cecba5f")
-print(reservation)
+agent.get_reservation("77f9dd33-9b24-4a66-a58c-7a059cecba5f")
 ```
 Returns a [Reservation](#reservation) object:
 ```commandline
@@ -102,21 +111,40 @@ Reservation(
 )
 ```
 
+#### Get ReservationEnquiry
+
+Takes a ReservationEnquiry ID:
+
+```python
+agent.get_reservation_enquiry("a4711a61-2282-4dc8-8229-99b526bdf0b6")
+```
+Returns a [ReservationEnquiry](#reservationenquiry) object:
+```commandline
+ReservationEnquiry(
+	id: a4711a61-2282-4dc8-8229-99b526bdf0b6,
+	merchantId: 33226,
+	customerId: 0bd07451-0c0e-40e9-8429-8a589f59e254,
+	capacity: 2,
+	startTime: 2019-09-01T02:00+10:00[Australia/Sydney],
+	endTime: 2019-09-01T04:00+10:00[Australia/Sydney],
+	status: NEW
+)
+```
+
 ## Merchant
 
-[Quandoo Docs](https://docs.quandoo.com/specs/domain/merchant.html): *"Internally this is how we refer to our partner restaurants. Every merchant has an ID or merchant ID assigned to them."*
+See [Quandoo Docs](https://docs.quandoo.com/quandoo-terminology/)
 
 #### Get Customers
 
-Takes nothing:
+Takes optional: offset, limit, modified_since and modified_until
 
 ```python
-merchant = agent.get_merchant(merchant_id)
-
-customers = merchant.get_customers()
-print(customers)
+merchant.get_customers()
 ```
-Returns a list of [Customer](#customer) objects:
+
+Returns list of [Customers](#customer)
+
 ```commandline
 [
     Customer(
@@ -137,11 +165,10 @@ Returns a list of [Customer](#customer) objects:
 
 #### Get Reservations
 
-Takes optional: limit, earliest, latest
+Takes optional: offset, limit, earliest and latest
 
 ```python
-reservations = merchant.get_reservations(limit=2, earliest=QuandooDatetime(2020, 1, 20), latest=QuandooDatetime(2020, 2, 2))
-print(reservations)
+merchant.get_reservations(limit=2, earliest=QuandooDatetime(2020, 1, 20), latest=QuandooDatetime(2020, 2, 2))
 ```
 
 Returns a list of [Reservation](#reservation) objects:
@@ -179,8 +206,7 @@ Optional: duration=2, area_id
 capacity = 2
 res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
 
-avail_times = merchant.get_available_times(capacity, res_datetime)
-print(avail_times)
+merchant.get_available_times(capacity, res_datetime)
 ```
 
 Returns list of [QuandooDatetime](#quandoodatetime) objects
@@ -276,20 +302,49 @@ Returns list of [QuandooDatetime](#quandoodatetime) objects
 
 #### Check if specific time is available
 
-Takes a capacity for the reservation as well as the [QuandooDatetime](#quandoodatetime)
+Takes a capacity for the reservation as well as the [QuandooDatetime](#quandoodatetime).
+Optional: duration=2, area_id
 
 ```python
 capacity = 2
 res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
 
-avail_times = merchant.is_available(capacity, res_datetime)
-print(avail_times)
+merchant.is_available(capacity, res_datetime)
 ```
 
 Returns a boolean
 
 ```commandline
 True
+```
+
+#### Get reviews
+Takes optional: offset and limit
+
+```python
+merchant.get_reviews()
+```
+
+Returns json dump
+
+```commandline
+{
+  "reviews": [
+    {
+      "customer": {
+        "firstName": "Kotaro",
+        "lastName": "F"
+      },
+      "rating": 3,
+      "description": "We felt a cheap atmosphere and couldn't receive a kind service at all.  ",
+      "locale": "en_GB",
+      "date": "2019-03-28"
+    }
+  ],
+  "size": 1,
+  "offset": 0,
+  "limit": 10
+}
 ```
 
 #### Create Reservation
@@ -302,8 +357,7 @@ customer = agent.get_customer(customer_id)
 capacity = 2
 res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
 
-new_res = merchant.create_reservation(customer, capacity, res_datetime)
-print(new_res)
+merchant.create_reservation(customer, capacity, res_datetime)
 ```
 
 Returns a [NewReservation](#newreservation) object:
@@ -317,24 +371,43 @@ NewReservation(
 )
 ```
 
+#### Create Reservation Enquiry
+
+Takes a [Customer](#customer), capacity for the reservation, start and end times as a [QuandooDatetime](#quandoodatetime) and a message. 
+
+```python
+customer = agent.get_customer(customer_id)
+capacity = 2
+start_qdt, end_qdt = QuandooDatetime(year, month, day, 12), QuandooDatetime(year, month, day, 14)
+message = "Looking for a table please!"
+
+merchant.create_reservation_enquiry(customer, capacity, start_qdt, end_qdt, message)
+```
+
+Returns a [NewReservationEnquiry](#newreservationenquiry) object:
+
+```commandline
+NewReservationEnquiry(
+	id: a869da69-939a-416a-afa4-eb875ae4575e,
+	customerId: 0bd07451-0c0e-40e9-8429-8a589f59e254
+)
+```
+
 ## Customer
 
-[Quandoo Docs](https://docs.quandoo.com/specs/domain/guest.html) (referred to as "Guests"): *"These are the people attending the reservation."*
+See [Quandoo Docs](https://docs.quandoo.com/quandoo-terminology/)
 
-Customers (Guests) are not able to be created explcitly with Quandoo's current API implementation, new Customers are created when creating a new Reservation, if the Customer does not exist (indexed by email) a new Customer will be created.
+Customers (Guests) are not able to be created explcitly with Quandoo's current API implementation, new Customers are created when creating a new Reservation, if the Customer does not exist (referenced by email) a new Customer will be created.
 
 ## Reservation
 
-[Quandoo Docs](https://docs.quandoo.com/specs/domain/reservation.html): *"A reservation ‘belongs’ to both a merchant and a guest. Reservations can go through multiple states. The current functionality of the API only allows creation."*
+See [Quandoo Docs](https://docs.quandoo.com/quandoo-terminology/)
 
 #### Cancel
 
 Takes nothing:
 
 ```python
-reservation_id = "f140dcb3-a318-400c-9767-6a6bd93c5e69"
-
-reservation = agent.get_reservation(reservation_id)
 reservation.cancel()
 ```
 Returns nothing:
@@ -347,9 +420,6 @@ Returns nothing:
 Takes nothing:
 
 ```python
-reservation_id = "f140dcb3-a318-400c-9767-6a6bd93c5e69"
-
-reservation = agent.get_reservation(reservation_id)
 reservation.reconfirm()
 ```
 Returns nothing:
@@ -357,16 +427,12 @@ Returns nothing:
 
 ```
 
-
 #### Change Capacity
 
 Takes the new capacity:
 
 ```python
-reservation_id = "f140dcb3-a318-400c-9767-6a6bd93c5e69"
 new_capacity = 2
-
-reservation = agent.get_reservation(reservation_id)
 reservation.change_capacity(new_capacity)
 ```
 Returns nothing:
@@ -388,8 +454,7 @@ capacity = 2
 res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
 
 new_reservation = merchant.create_reservation(customer, capacity, res_datetime)
-new_reservation_full = new_reservation.get_reservation()
-print(new_reservation_full)
+new_reservation.get_reservation()
 ```
 Returns a [Reservation](#reservation) object:
 ```commandline
@@ -405,17 +470,52 @@ Reservation(
 )
 ```
 
+## ReservationEnquiry
+
+See [Quandoo Docs](https://docs.quandoo.com/quandoo-terminology/)
+
+#### Get messages
+Takes nothing
+
+## NewReservationEnquiry
+
+Similar to ReservationEnquiry, it is what is returned on ReservationEnquiry creation.
+
+#### Get Full ReservationEnquiry
+
+Takes nothing:
+
+```python
+customer = agent.get_customer(customer_id)
+capacity = 2
+start_qdt, end_qdt = QuandooDatetime(year, month, day, 12), QuandooDatetime(year, month, day, 14)
+
+new_res_enq = merchant.create_reservation_enquiry(customer, capacity, start_qdt, end_qdt, "Looking for a table please!")
+new_res_enq.get_reservation_enquiry()
+```
+Returns a [ReservationEnquiry](#reservationenquiry) object:
+```commandline
+ReservationEnquiry(
+	id: e0d87523-46ac-4159-b146-8119f567b58f,
+	merchantId: 33226,
+	customerId: 0bd07451-0c0e-40e9-8429-8a589f59e254,
+	capacity: 2,
+	startTime: 2019-09-01T02:00+10:00[Australia/Sydney],
+	endTime: 2019-09-01T04:00+10:00[Australia/Sydney],
+	status: NEW
+)
+``` 
+
 ## QuandooDatetime
 
 A datetime class with extra functionality useful to Quandoo, ie a time resolution of 15 minutes
 
 #### Get specfic time
 
-Takes usual [datetime](https://docs.python.org/3/library/datetime.html) paramters, but has a time resolution of 15 minutes
+Takes usual [datetime](https://docs.quandoo.com/quandoo-terminology/) paramters, but has a time resolution of 15 minutes
 
 ```python
-qdt = res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
-print(qdt)
+QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
 ```
 
 Returns a [QuandooDatetimeObject](#quandoodatetime)
@@ -430,11 +530,10 @@ QuandooDatetime(
 
 #### Get current time
 
-Takes nothing:
+Static. Takes nothing:
 
 ```python
-qdt = QuandooDatetime.now()
-print(qdt)
+QuandooDatetime.now()
 ```
 
 Returns a [QuandooDatetimeObject](#quandoodatetime)
@@ -449,11 +548,10 @@ QuandooDatetime(
 
 #### Parse time returned by Quandoo API
 
-Takes a string:
+Static. Takes a string:
 
 ```python
-qdt = QuandooDatetime.parse_str_qdt("2019-07-01T12:00:00+10:00")
-print(qdt)
+QuandooDatetime.parse_str_qdt("2019-07-01T12:00:00+10:00")
 ```
 
 Returns a [QuandooDatetimeObject](#quandoodatetime)
@@ -471,8 +569,8 @@ QuandooDatetime(
 Takes nothing:
 
 ```python
-qdt = res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
-print(qdt.get_qdt())
+qdt = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
+qdt.get_qdt()
 ```
 
 Returns a Quandoo formatted datetime string
@@ -486,8 +584,8 @@ Returns a Quandoo formatted datetime string
 Takes nothing:
 
 ```python
-qdt = res_datetime = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
-print(qdt.pretty_date())
+qdt = QuandooDatetime(year=2019, month=7, day=1, hour=12, minute=0)
+qdt.pretty_date()
 ```
 
 Returns a formatted datetime string that reads well

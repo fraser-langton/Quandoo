@@ -1,14 +1,14 @@
 """
 Unofficial library, still in progress
 
-Author(s):
+Author:
     Fraser Langton <fraserbasil@gmail.com>
 
 GitHub:
     github.com/fraser-langton/Quandoo
 
 Quandoo API docs:
-    docs.quandoo.com (/swagger.html for better docs)
+    docs.quandoo.com
 """
 
 import json
@@ -21,6 +21,7 @@ from quandoo.Error import PoorResponse
 from quandoo.Merchant import Merchant
 from quandoo.QuandooModel import urljoin, PrettyClass
 from quandoo.Reservation import Reservation
+from quandoo.ReservationEnquiry import ReservationEnquiry
 
 
 class Agent(PrettyClass):
@@ -33,10 +34,7 @@ class Agent(PrettyClass):
         self.oauth_token = oauth_token
         self.agent_id = agent_id
 
-        if test:
-            self.url = urljoin(config.base_url_test, config.version)
-        else:
-            self.url = urljoin(config.base_url, config.version)
+        self.url = urljoin(config.base_url_test, config.version) if test else urljoin(config.base_url, config.version)
 
         self.headers["X-Quandoo-AuthToken"] = oauth_token
 
@@ -66,3 +64,26 @@ class Agent(PrettyClass):
             return Reservation(json.loads(response.text), self)
 
         raise PoorResponse(response.status_code, json.loads(response.text), request)
+
+    def get_reservation_enquiry(self, reservation_enquiry_id):
+        request = urljoin(self.url, "reservation-enquiries", reservation_enquiry_id)
+        response = requests.get(request, headers=self.headers)
+
+        if response.status_code == 200:
+            return ReservationEnquiry(json.loads(response.text), self)
+
+        raise PoorResponse(response.status_code, json.loads(response.text), request)
+
+
+def status():
+    request = urljoin(config.base_url, config.version, "status")
+    response = requests.get(request)
+
+    return response.status_code
+
+
+def status_test():
+    request = urljoin(config.base_url_test, config.version, "status")
+    response = requests.get(request)
+
+    return response.status_code

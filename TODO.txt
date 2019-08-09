@@ -1,1 +1,17 @@
 // TO DO
+customer.get_reservations()
+
+merchant.similar()
+marchant.settings()
+
+agent.merchants()
+
+reservation.get_menu()
+reservation.create_preorder()
+reservation.get_preorders()
+reservation.update_preorder()
+
+Review
+agent.create_review()
+agent.get_review()
+agent.update_review()

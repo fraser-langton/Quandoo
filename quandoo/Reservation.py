@@ -10,6 +10,8 @@ class Reservation(QuandooModel):
 
     def __init__(self, data, agent):
         self.id = data["id"]
+        self.number = data["number"]
+        self.quandooId = data["quandooId"]
         self.status = data["status"]
         self.date = QuandooDatetime.parse_str_qdt(data["startTime"])
         self.startTime = QuandooDatetime.parse_str_qdt(data["startTime"])
@@ -17,6 +19,9 @@ class Reservation(QuandooModel):
         self.capacity = data["capacity"]
         self.merchantId = data["merchantId"]
         self.customerId = data["customerId"]
+        self.extraInfo = data["extraInfo"]
+        self.createdAt = data["createdAt"]
+        self.updatedAt = data["updatedAt"]
 
         self.agent = agent
 
@@ -38,53 +43,42 @@ class Reservation(QuandooModel):
             ",\n\t".join(useful_attrs)
         )
 
-    def cancel(self):
+    def _update(self, new_status: str=None, new_capacity: int=None, new_area_id: int=None, new_start_time: QuandooDatetime=None):
         data = {
-            "reservation": {
-                "status": "CUSTOMER_CANCELED"
-            }
+            "reservation": {}
         }
+
+        if new_status is not None:
+            data["reservation"]["status"] = new_status
+        if new_capacity is not None:
+            data["reservation"]["capacity"] = new_capacity
+        if new_area_id is not None:
+            data["reservation"]["areaId"] = new_area_id
+        if new_start_time is not None:
+            data["reservation"]["dateTime"] = new_start_time
 
         request = urljoin(self.agent.url, "reservations", self.id)
         response = requests.patch(request, headers=self.agent.headers, json=data)
 
         if response.status_code == 200:
-            self.status = "CUSTOMER_CANCELED"
+            # TO DO
+            # Change instance variables - by new fetch or local change?
+            # new fetch is slower vs local change needs to re calc endTime
             return
 
         raise PoorResponse(response.status_code, json.loads(response.text), request)
+
+    def cancel(self):
+        self._update(new_status="CUSTOMER_CANCELED")
+        self.status = "CUSTOMER_CANCELED"
 
     def reconfirm(self):
-        data = {
-            "reservation": {
-                "status": "RECONFIRMED"
-            }
-        }
-
-        request = urljoin(self.agent.url, "reservations", self.id)
-        response = requests.patch(request, headers=self.agent.headers, json=data)
-
-        if response.status_code == 200:
-            self.status = "RECONFIRMED"
-            return
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        self._update(new_status="RECONFIRMED")
+        self.status = "RECONFIRMED"
 
     def change_capacity(self, new_capacity):
-        data = {
-            "reservation": {
-                "capacity": new_capacity,
-            }
-        }
-
-        request = urljoin(self.agent.url, "reservations", self.id)
-        response = requests.patch(request, headers=self.agent.headers, json=data)
-
-        if response.status_code == 200:
-            self.capacity = new_capacity
-            return
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        self._update(new_capacity=new_capacity)
+        self.capacity = new_capacity
 
 
 class NewReservation(QuandooModel):
