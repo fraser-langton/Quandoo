@@ -74,6 +74,16 @@ class Agent(PrettyClass):
 
         raise PoorResponse(response.status_code, json.loads(response.text), request)
 
+    def merchants(self, params=None):
+        request = urljoin(self.url, 'merchants')
+        response = requests.get(request, headers=self.headers, params=params)
+
+        if response.status_code == 200:
+            # print(json.dumps(json.loads(response.text), indent=2))
+            return [Merchant(i, self) for i in json.loads(response.text)['merchants']]
+
+        raise PoorResponse(response.status_code, json.loads(response.text), request)
+
 
 def status():
     request = urljoin(config.base_url, config.version, "status")

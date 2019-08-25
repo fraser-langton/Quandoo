@@ -71,6 +71,42 @@ Merchant(
 )
 ```
 
+#### Merchant search
+
+Takes a dictionary of parameters, as outlined in [Quandoo docs](https://docs.quandoo.com/interactive-api/)
+
+```python
+search_params = {
+    'centerPoint': '-34.9284989,138.6007456',
+    'date': '2019-09-01',
+    'fromTime': '20:00',
+    'limit': '3',
+    'bookable': 'true'
+}
+merchants = agent.merchants(params=search_params)
+```
+
+Returns a list of [Merchants](#merchant)
+
+```commandline
+[
+	Merchant(
+		id: 15733,
+		name: House Of Chow,
+		address: number, city, country
+	), 
+	Merchant(
+		id: 16446,
+		name: Namaste Nepalese,
+		address: number, city, country
+	), 
+	Merchant(
+		id: 18652,
+		name: Phonatic,
+		address: number, city, country
+	)]
+```
+
 #### Get Customer
 
 Takes a Customer ID:
@@ -387,7 +423,7 @@ merchant.create_reservation_enquiry(customer, capacity, start_qdt, end_qdt, mess
 Returns a [NewReservationEnquiry](#newreservationenquiry) object:
 
 ```commandline
-NewReservationEnquiry(
+New ReservationEnquiry(
 	id: a869da69-939a-416a-afa4-eb875ae4575e,
 	customerId: 0bd07451-0c0e-40e9-8429-8a589f59e254
 )

@@ -1,10 +1,10 @@
 // TO DO
 customer.get_reservations()
 
+Merchant
 merchant.similar()
 marchant.settings()
-
-agent.merchants()
+address fix
 
 reservation.get_menu()
 reservation.create_preorder()
