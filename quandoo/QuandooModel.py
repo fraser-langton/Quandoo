@@ -1,7 +1,7 @@
 import json
 import sys
-import time
-from datetime import datetime as dt, timezone, timedelta
+from datetime import datetime
+import tzlocal
 
 
 class PrettyClass:
@@ -35,12 +35,15 @@ class QuandooModel(PrettyClass):
 class QuandooDatetime(PrettyClass):
     TIME_RESOLUTION = 15  # minutes
 
-    def __init__(self, year, month=None, day=None, hour=0, minute=0, second=0, microsecond=0, tzinfo=None):
-        second = microsecond = 0
-        if not tzinfo:
-            tzinfo = timezone(timedelta(seconds=-time.timezone))
+    def __init__(self, *args, **kwargs):
+        if type(args[0]) == datetime and len(args) == 1:
+            self.datetime = args[0]
+        else:
+            self.datetime = datetime(*args, **kwargs)
 
-        self.datetime = dt(year, month, day, hour, minute, second, microsecond, tzinfo)
+        if not self.datetime.tzinfo:
+            self.datetime = tzlocal.get_localzone().localize(self.datetime)
+
         self.__resolve_time()
 
     def __str__(self):
@@ -61,29 +64,26 @@ class QuandooDatetime(PrettyClass):
 
     @staticmethod
     def now():
-        y, m, d, h, i, *_ = dt.now().timetuple()
-        return QuandooDatetime(y, m, d, h, i)
+        return QuandooDatetime(datetime.now())
 
     @staticmethod
     def parse_str_qdt(string):
         d = string.split("+")
         d[1] = d[1].replace(":", "")
-        y, m, d, h, i, *_ = dt.strptime("+".join(d), "%Y-%m-%dT%H:%M:%S%z").timetuple()
-        return QuandooDatetime(y, m, d, h, i)
+        return QuandooDatetime(datetime.strptime("+".join(d), "%Y-%m-%dT%H:%M:%S%z"))
 
     @staticmethod
     def parse_pretty_qdt(string):
-        y, m, d, h, i, *_ = dt.strptime(string, "%I:%M %p, %a %d %B %Y").timetuple()
-        return QuandooDatetime(y, m, d, h, i)
+        return QuandooDatetime(datetime.strptime(string, "%I:%M %p, %a %d %B %Y"))
 
     def __resolve_time(self):
-        y, m, d, h, i, *_ = self.datetime.timetuple()
-        i = ((i // QuandooDatetime.TIME_RESOLUTION) * QuandooDatetime.TIME_RESOLUTION)
+        minute = (self.datetime.minute // QuandooDatetime.TIME_RESOLUTION) * QuandooDatetime.TIME_RESOLUTION
+        second = microsecond = 0
 
-        self.datetime = dt(y, m, d, h, i, tzinfo=self.datetime.tzinfo)
+        self.datetime = self.datetime.replace(minute=minute, second=second, microsecond=microsecond)
 
     def get_qdt(self):
-        return dt.strftime(self.datetime, "%Y-%m-%dT%H:%M:%S{}".format(str(self.datetime.tzinfo)[-6:]))
+        return self.datetime.__str__().replace(' ', 'T')
 
     def get_urldt(self):
         return self.datetime.strftime("%Y-%m-%d %H:%M:%S")
