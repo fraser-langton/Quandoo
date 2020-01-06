@@ -1,12 +1,14 @@
 // TO FIX
-def __resolve_time(self):
-  minute = (math.floor(self.datetime.minute / QuandooDatetime.TIME_RESOLUTION)) * QuandooDatetime.TIME_RESOLUTION
-  second = microsecond = 0
-
-  self.datetime = self.datetime.replace(minute=minute, second=second, microsecond=microsecond)
-  
-  # ensure time is always in the future
-  self.datetime += timedelta(minutes=QuandooDatetime.TIME_RESOLUTION)
+QuandooDatetime
+@staticmethod
+def now():
+    qdt = QuandooDatetime(datetime.now())
+    qdt += timedelta(minutes=QuandooDatetime.TIME_RESOLUTION)
+    return qdt
+    
+Merchant
+def create_reservation(...):
+    # remove json.dumps(extra_info)
 
 // TO DO
 customer.get_reservations()
