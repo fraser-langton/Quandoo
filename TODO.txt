@@ -4,6 +4,8 @@ def __resolve_time(self):
   second = microsecond = 0
 
   self.datetime = self.datetime.replace(minute=minute, second=second, microsecond=microsecond)
+  
+  # ensure time is always in the future
   self.datetime += timedelta(minutes=QuandooDatetime.TIME_RESOLUTION)
 
 // TO DO
