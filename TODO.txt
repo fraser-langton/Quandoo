@@ -1,3 +1,11 @@
+// TO FIX
+def __resolve_time(self):
+  minute = (math.floor(self.datetime.minute / QuandooDatetime.TIME_RESOLUTION)) * QuandooDatetime.TIME_RESOLUTION
+  second = microsecond = 0
+
+  self.datetime = self.datetime.replace(minute=minute, second=second, microsecond=microsecond)
+  self.datetime += timedelta(minutes=QuandooDatetime.TIME_RESOLUTION)
+
 // TO DO
 customer.get_reservations()
 
