@@ -10,6 +10,37 @@ Merchant
 def create_reservation(...):
     # remove json.dumps(extra_info)
     
+def create_reservation(self, customer, pax: int, qdt: QuandooDatetime, area_id=None, order_id=None, extra_info=None, reservation_tags=[]):
+    data = {
+        "reservation": {
+            "merchantId": self.id,
+            "capacity": pax,
+            "dateTime": qdt.get_qdt()
+        },
+        "customer": customer.to_json(),
+        "tracking": {
+            "agent": {
+                "id": self.agent.agent_id
+            }
+        }
+    }
+    if area_id is not None:
+        data["reservation"]["areaId"] = area_id
+    if order_id is not None:
+        data["reservation"]["orderId"] = order_id
+    if extra_info is not None:
+        data["reservation"]["extraInfo"] = extra_info
+    if reservation_tags:
+        data["reservation"]['reservationTags'] = reservation_tags
+
+    request = urljoin(self.agent.url, "reservations")
+    response = requests.put(request, headers=self.agent.headers, json=data)
+
+    if response.status_code == 200:
+        return NewReservation(json.loads(response.text), self.agent)
+
+    raise PoorResponse(response.status_code, json.loads(response.text), request)
+    
 def get_reservation_tags(self):
     request = urljoin(self.agent.url, 'merchants', self.id, 'reservation_tags')
     response = requests.put(request, headers=self.agent.headers)
