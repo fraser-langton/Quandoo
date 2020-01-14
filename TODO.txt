@@ -9,6 +9,31 @@ def now():
 Merchant
 def create_reservation(...):
     # remove json.dumps(extra_info)
+    
+def get_reservation_tags(self):
+    request = urljoin(self.agent.url, self.id, 'reservation_tags')
+    response = requests.put(request, headers=self.agent.headers)
+
+    if response.status_code == 200:
+        return json.dumps(json.loads(response.text), indent=4)
+
+    raise PoorResponse(response.status_code, json.loads(response.text), request)
+    
+def get_reviews(self, offset=0, limit=10):
+    params = {
+        "offset": offset,
+        "limit": limit
+    }
+
+    request = urljoin(self.agent.url, "merchants", self.id, "reviews")
+    response = requests.get(request, headers=self.agent.headers, params=params)
+
+    if response.status_code == 200:
+        return json.dumps(json.loads(response.text), indent=4)
+
+    raise PoorResponse(response.status_code, json.loads(response.text), request)
+
+-----------------------------------------------------------------------------------------------------------------------------
 
 // TO DO
 customer.get_reservations()
