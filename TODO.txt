@@ -6,91 +6,133 @@ def now():
     qdt += timedelta(minutes=QuandooDatetime.TIME_RESOLUTION)
     return qdt
     
-Merchant
-def create_reservation(...):
-    # remove json.dumps(extra_info)
-    
-def create_reservation(self, customer, pax: int, qdt: QuandooDatetime, area_id=None, order_id=None, extra_info=None, reservation_tags=[]):
-    data = {
-        "reservation": {
-            "merchantId": self.id,
-            "capacity": pax,
-            "dateTime": qdt.get_qdt()
-        },
-        "customer": customer.to_json(),
-        "tracking": {
-            "agent": {
-                "id": self.agent.agent_id
+class Merchant(QuandooModel):
+
+    def __init__(self, data, agent):
+        if type(data) == dict:
+            self.id = data["id"]
+            self.name = data["name"]
+            address_vals = [i if i in data["location"]["address"].keys() else "" for i in ['number', 'street', 'city', 'country']]
+            address_vals[1] = " ".join(address_vals[:1])
+            address_vals = address_vals[1:]
+            self.address = ", ".join(address_vals)
+
+        else:
+            self.id = data
+
+        self.agent = agent
+
+        super().__init__(data)
+        
+    def create_reservation(...):
+        # remove json.dumps(extra_info)
+
+    def create_reservation(self, customer, pax: int, qdt: QuandooDatetime, area_id=None, order_id=None, extra_info=None, reservation_tags=[]):
+        data = {
+            "reservation": {
+                "merchantId": self.id,
+                "capacity": pax,
+                "dateTime": qdt.get_qdt()
+            },
+            "customer": customer.to_json(),
+            "tracking": {
+                "agent": {
+                    "id": self.agent.agent_id
+                }
             }
         }
-    }
-    if area_id is not None:
-        data["reservation"]["areaId"] = area_id
-    if order_id is not None:
-        data["reservation"]["orderId"] = order_id
-    if extra_info is not None:
-        data["reservation"]["extraInfo"] = extra_info
-    if reservation_tags:
-        data["reservation"]['reservationTags'] = reservation_tags
+        if area_id is not None:
+            data["reservation"]["areaId"] = area_id
+        if order_id is not None:
+            data["reservation"]["orderId"] = order_id
+        if extra_info is not None:
+            data["reservation"]["extraInfo"] = extra_info
+        if reservation_tags:
+            data["reservation"]['reservationTags'] = reservation_tags
 
-    request = urljoin(self.agent.url, "reservations")
-    response = requests.put(request, headers=self.agent.headers, json=data)
+        request = urljoin(self.agent.url, "reservations")
+        response = requests.put(request, headers=self.agent.headers, json=data)
 
-    if response.status_code == 200:
-        return NewReservation(json.loads(response.text), self.agent)
+        if response.status_code == 200:
+            return NewReservation(json.loads(response.text), self.agent)
 
-    raise PoorResponse(response.status_code, json.loads(response.text), request)
-    
-def get_reservation_tags(self):
-    request = urljoin(self.agent.url, 'merchants', self.id, 'reservation_tags')
-    response = requests.put(request, headers=self.agent.headers)
+        raise PoorResponse(response.status_code, json.loads(response.text), request)
 
-    if response.status_code == 200:
-        return json.dumps(json.loads(response.text), indent=4)
+    def get_reservation_tags(self):
+        request = urljoin(self.agent.url, 'merchants', self.id, 'reservation_tags')
+        response = requests.put(request, headers=self.agent.headers)
 
-    raise PoorResponse(response.status_code, json.loads(response.text), request
-    )
-    
-def get_reviews(self, offset=0, limit=10):
-    params = {
-        "offset": offset,
-        "limit": limit
-    }
+        if response.status_code == 200:
+            return json.dumps(json.loads(response.text), indent=4)
 
-    request = urljoin(self.agent.url, "merchants", self.id, "reviews")
-    response = requests.get(request, headers=self.agent.headers, params=params)
+        raise PoorResponse(response.status_code, json.loads(response.text), request
+        )
 
-    if response.status_code == 200:
-        return json.dumps(json.loads(response.text), indent=4)
+    def get_reviews(self, offset=0, limit=10):
+        params = {
+            "offset": offset,
+            "limit": limit
+        }
 
-    raise PoorResponse(response.status_code, json.loads(response.text), request)
+        request = urljoin(self.agent.url, "merchants", self.id, "reviews")
+        response = requests.get(request, headers=self.agent.headers, params=params)
 
-def _update(self, new_status: str=None, new_capacity: int=None, new_area_id: int=None, new_start_time: QuandooDatetime=None, reservation_tags=[]):
-    data = {
-        "reservation": {}
-    }
+        if response.status_code == 200:
+            return json.dumps(json.loads(response.text), indent=4)
 
-    if new_status is not None:
-        data["reservation"]["status"] = new_status
-    if new_capacity is not None:
-        data["reservation"]["capacity"] = new_capacity
-    if new_area_id is not None:
-        data["reservation"]["areaId"] = new_area_id
-    if new_start_time is not None:
-        data["reservation"]["dateTime"] = new_start_time.get_qdt()
-    if reservation_tags:
-        data["reservation"]['reservationTags'] = reservation_tags
+        raise PoorResponse(response.status_code, json.loads(response.text), request)
 
-    request = urljoin(self.agent.url, "reservations", self.id)
-    response = requests.patch(request, headers=self.agent.headers, json=data)
+class Reservation(QuandooModel):
 
-    if response.status_code == 200:
-        # TO DO
-        # Change instance variables - by new fetch or local change?
-        # new fetch is slower vs local change needs to re calc endTime
-        return
+    def __init__(self, data, agent):
+        if type(data) == dict:
+            self.id = data["id"]
+            self.number = data["number"]
+            self.quandooId = data["quandooId"]
+            self.status = data["status"]
+            self.date = QuandooDatetime.parse_str_qdt(data["startTime"])
+            self.startTime = QuandooDatetime.parse_str_qdt(data["startTime"])
+            self.endTime = QuandooDatetime.parse_str_qdt(data["endTime"])
+            self.capacity = data["capacity"]
+            self.merchantId = data["merchantId"]
+            self.customerId = data["customerId"]
+            self.extraInfo = data["extraInfo"]
+            self.createdAt = data["createdAt"]
+            self.updatedAt = data["updatedAt"]
 
-    raise PoorResponse(response.status_code, json.loads(response.text), request)
+        else:
+            self.id = data
+
+        self.agent = agent
+
+        super().__init__(data)
+
+    def _update(self, new_status: str=None, new_capacity: int=None, new_area_id: int=None, new_start_time: QuandooDatetime=None, reservation_tags=[]):
+        data = {
+            "reservation": {}
+        }
+
+        if new_status is not None:
+            data["reservation"]["status"] = new_status
+        if new_capacity is not None:
+            data["reservation"]["capacity"] = new_capacity
+        if new_area_id is not None:
+            data["reservation"]["areaId"] = new_area_id
+        if new_start_time is not None:
+            data["reservation"]["dateTime"] = new_start_time.get_qdt()
+        if reservation_tags:
+            data["reservation"]['reservationTags'] = reservation_tags
+
+        request = urljoin(self.agent.url, "reservations", self.id)
+        response = requests.patch(request, headers=self.agent.headers, json=data)
+
+        if response.status_code == 200:
+            # TO DO
+            # Change instance variables - by new fetch or local change?
+            # new fetch is slower vs local change needs to re calc endTime
+            return
+
+        raise PoorResponse(response.status_code, json.loads(response.text), request)
 
 -----------------------------------------------------------------------------------------------------------------------------
 
