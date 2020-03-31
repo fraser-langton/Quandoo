@@ -13,7 +13,7 @@ with open(path.join(path.abspath(path.dirname(__file__)), 'README.md'), encoding
 
 setup(
     name='Quandoo',
-    version='1.3.4',
+    version='1.3.5',
     description="A SDK for interacting with the Quandoo API, it is a work in progress",
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -29,9 +29,10 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     keywords='quandoo api',
-    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
+    packages=find_packages(exclude=['contrib', 'docs', 'tests', 'test']),
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4',
     install_requires=['requests', 'tzlocal'],
 )

@@ -12,7 +12,6 @@ Quandoo API docs:
 """
 
 import json
-
 import requests
 
 from quandoo import config

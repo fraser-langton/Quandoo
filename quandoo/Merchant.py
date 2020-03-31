@@ -13,12 +13,16 @@ from quandoo.ReservationEnquiry import NewReservationEnquiry
 class Merchant(QuandooModel):
 
     def __init__(self, data, agent):
-        self.id = data["id"]
-        self.name = data["name"]
-        address_vals = [i if i in data["location"]["address"].keys() else "" for i in ['number', 'street', 'city', 'country']]
-        address_vals[1] = " ".join(address_vals[:1])
-        address_vals = address_vals[1:]
-        self.address = ", ".join(address_vals)
+        if type(data) == dict:
+            self.id = data["id"]
+            self.name = data["name"]
+            address_vals = [i if i in data["location"]["address"].keys() else "" for i in ['number', 'street', 'city', 'country']]
+            address_vals[1] = " ".join(address_vals[:1])
+            address_vals = address_vals[1:]
+            self.address = ", ".join(address_vals)
+
+        else:
+            self.id = data
 
         self.agent = agent
 
@@ -39,7 +43,7 @@ class Merchant(QuandooModel):
 
         if response.status_code == 200:
             return [Customer(i, self.agent) for i in json.loads(response.text)["result"]]
-
+        print(request)
         raise PoorResponse(response.status_code, json.loads(response.text), request)
 
     def get_reservations(self, offset=0, limit=100, earliest=None, latest=None):
@@ -91,11 +95,11 @@ class Merchant(QuandooModel):
         response = requests.get(request, headers=self.agent.headers, params=params)
 
         if response.status_code == 200:
-            return json.dumps(json.loads(response.text), indent=2)
+            return json.dumps(json.loads(response.text), indent=4)
 
         raise PoorResponse(response.status_code, json.loads(response.text), request)
 
-    def create_reservation(self, customer, pax: int, qdt: QuandooDatetime, area_id=None, order_id=None, extra_info=None):
+    def create_reservation(self, customer, pax: int, qdt: QuandooDatetime, area_id=None, order_id=None, extra_info=None, reservation_tags=[]):
         data = {
             "reservation": {
                 "merchantId": self.id,
@@ -114,7 +118,9 @@ class Merchant(QuandooModel):
         if order_id is not None:
             data["reservation"]["orderId"] = order_id
         if extra_info is not None:
-            data["reservation"]["extraInfo"] = json.dumps(extra_info)
+            data["reservation"]["extraInfo"] = extra_info
+        if reservation_tags:
+            data["reservation"]['reservationTags'] = reservation_tags
 
         request = urljoin(self.agent.url, "reservations")
         response = requests.put(request, headers=self.agent.headers, json=data)
@@ -148,3 +154,13 @@ class Merchant(QuandooModel):
             return NewReservationEnquiry(json.loads(response.text), self.agent)
 
         raise PoorResponse(response.status_code, json.loads(response.text), request)
+
+    def get_reservation_tags(self):
+        request = urljoin(self.agent.url, 'merchants', self.id, 'reservation_tags')
+        response = requests.put(request, headers=self.agent.headers)
+
+        if response.status_code == 200:
+            return json.dumps(json.loads(response.text), indent=4)
+
+        raise PoorResponse(response.status_code, json.loads(response.text), request
+        )

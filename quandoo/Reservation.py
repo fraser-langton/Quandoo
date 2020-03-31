@@ -9,19 +9,23 @@ from quandoo.QuandooModel import urljoin, QuandooModel, QuandooDatetime
 class Reservation(QuandooModel):
 
     def __init__(self, data, agent):
-        self.id = data["id"]
-        self.number = data["number"]
-        self.quandooId = data["quandooId"]
-        self.status = data["status"]
-        self.date = QuandooDatetime.parse_str_qdt(data["startTime"])
-        self.startTime = QuandooDatetime.parse_str_qdt(data["startTime"])
-        self.endTime = QuandooDatetime.parse_str_qdt(data["endTime"])
-        self.capacity = data["capacity"]
-        self.merchantId = data["merchantId"]
-        self.customerId = data["customerId"]
-        self.extraInfo = data["extraInfo"]
-        self.createdAt = data["createdAt"]
-        self.updatedAt = data["updatedAt"]
+        if type(data) == dict:
+            self.id = data["id"]
+            self.number = data["number"]
+            self.quandooId = data["quandooId"]
+            self.status = data["status"]
+            self.date = QuandooDatetime.parse_str_qdt(data["startTime"])
+            self.startTime = QuandooDatetime.parse_str_qdt(data["startTime"])
+            self.endTime = QuandooDatetime.parse_str_qdt(data["endTime"])
+            self.capacity = data["capacity"]
+            self.merchantId = data["merchantId"]
+            self.customerId = data["customerId"]
+            self.extraInfo = data["extraInfo"]
+            self.createdAt = data["createdAt"]
+            self.updatedAt = data["updatedAt"]
+
+        else:
+            self.id = data
 
         self.agent = agent
 
@@ -43,7 +47,7 @@ class Reservation(QuandooModel):
             ",\n\t".join(useful_attrs)
         )
 
-    def _update(self, new_status: str=None, new_capacity: int=None, new_area_id: int=None, new_start_time: QuandooDatetime=None):
+    def _update(self, new_status: str=None, new_capacity: int=None, new_area_id: int=None, new_start_time: QuandooDatetime=None, reservation_tags=[]):
         data = {
             "reservation": {}
         }
@@ -55,7 +59,9 @@ class Reservation(QuandooModel):
         if new_area_id is not None:
             data["reservation"]["areaId"] = new_area_id
         if new_start_time is not None:
-            data["reservation"]["dateTime"] = new_start_time
+            data["reservation"]["dateTime"] = new_start_time.get_qdt()
+        if reservation_tags:
+            data["reservation"]['reservationTags'] = reservation_tags
 
         request = urljoin(self.agent.url, "reservations", self.id)
         response = requests.patch(request, headers=self.agent.headers, json=data)
