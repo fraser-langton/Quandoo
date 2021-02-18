@@ -1,6 +1,6 @@
 # Quandoo for Python
 
-This is a fairly lightwieght SDK for interacting with the Quandoo API, it is a work in progress.
+A Python library to access the [Quandoo API (v1)](https://docs.quandoo.com/). Base functionality is covered and more peripheral features are being covered in due course.
 
 
 ## Installation
