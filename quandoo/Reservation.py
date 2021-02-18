@@ -2,8 +2,8 @@ import json
 
 import requests
 
-from quandoo.Error import PoorResponse
-from quandoo.QuandooModel import urljoin, QuandooModel, QuandooDatetime
+from .Error import PoorResponse
+from .QuandooModel import urljoin, QuandooModel, QuandooDatetime
 
 
 class Reservation(QuandooModel):
@@ -63,7 +63,7 @@ class Reservation(QuandooModel):
         if reservation_tags:
             data["reservation"]['reservationTags'] = reservation_tags
 
-        request = urljoin(self.agent.url, "reservations", self.id)
+        request = f"{self.agent.url}/reservations/{self.id}"
         response = requests.patch(request, headers=self.agent.headers, json=data)
 
         if response.status_code == 200:

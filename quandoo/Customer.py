@@ -1,6 +1,6 @@
 import locale
 
-from quandoo.QuandooModel import QuandooModel
+from .QuandooModel import QuandooModel
 
 
 class Customer(QuandooModel):

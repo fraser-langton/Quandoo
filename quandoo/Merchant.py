@@ -3,11 +3,11 @@ from datetime import timedelta
 
 import requests
 
-from quandoo.Customer import Customer
-from quandoo.Error import PoorResponse
-from quandoo.QuandooModel import QuandooModel, QuandooDatetime, urljoin
-from quandoo.Reservation import Reservation, NewReservation
-from quandoo.ReservationEnquiry import NewReservationEnquiry
+from .Customer import Customer
+from .Error import PoorResponse
+from .QuandooModel import QuandooModel, QuandooDatetime, urljoin
+from .Reservation import Reservation, NewReservation
+from .ReservationEnquiry import NewReservationEnquiry
 
 
 class Merchant(QuandooModel):
@@ -38,7 +38,7 @@ class Merchant(QuandooModel):
         if modified_until is not None:
             params["modifiedUntil"] = modified_until.get_urldt()
 
-        request = urljoin(self.agent.url, "merchants", self.id, "customer")
+        request = f"{self.agent.url}/merchants/{self.id}/customer"
         response = requests.get(request, headers=self.agent.headers, params=params)
 
         if response.status_code == 200:
@@ -56,7 +56,7 @@ class Merchant(QuandooModel):
         if latest is not None:
             params["latest"] = latest.get_urldt()
 
-        request = urljoin(self.agent.url, "merchants", self.id, "reservations")
+        request = f"{self.agent.url}/merchants/{self.id}/reservations"
         response = requests.get(request, headers=self.agent.headers, params=params)
 
         if response.status_code == 200:
@@ -74,7 +74,7 @@ class Merchant(QuandooModel):
         if area_id is not None:
             params["areaId"] = area_id
 
-        request = urljoin(self.agent.url, "merchants", self.id, "availabilities", qdt.datetime.strftime("%Y-%m-%d"), "times")
+        request = f"{self.agent.url}/merchants/{self.id}/availabilities/{qdt.datetime.strftime('%Y-%m-%d')}/times"
         response = requests.get(request, headers=self.agent.headers, params=params)
 
         if response.status_code == 200:
@@ -91,7 +91,7 @@ class Merchant(QuandooModel):
             "limit": limit
         }
 
-        request = urljoin(self.agent.url, "merchants", self.id, "reviews")
+        request = f"{self.agent.url}/merchants/{self.id}/reviews"
         response = requests.get(request, headers=self.agent.headers, params=params)
 
         if response.status_code == 200:
@@ -122,7 +122,7 @@ class Merchant(QuandooModel):
         if reservation_tags:
             data["reservation"]['reservationTags'] = reservation_tags
 
-        request = urljoin(self.agent.url, "reservations")
+        request = f"{self.agent.url}/reservations"
         response = requests.put(request, headers=self.agent.headers, json=data)
 
         if response.status_code == 200:
@@ -147,7 +147,7 @@ class Merchant(QuandooModel):
             }
         }
 
-        request = urljoin(self.agent.url, "reservation-enquiries")
+        request = f"{self.agent.url}/reservation-enquiries"
         response = requests.put(request, headers=self.agent.headers, json=data)
 
         if response.status_code == 201:
@@ -156,11 +156,10 @@ class Merchant(QuandooModel):
         raise PoorResponse(response.status_code, json.loads(response.text), request)
 
     def get_reservation_tags(self):
-        request = urljoin(self.agent.url, 'merchants', self.id, 'reservation_tags')
+        request = f"{self.agent.url}/merchants/{self.id}/reservation_tags"
         response = requests.put(request, headers=self.agent.headers)
 
         if response.status_code == 200:
             return json.dumps(json.loads(response.text), indent=4)
 
-        raise PoorResponse(response.status_code, json.loads(response.text), request
-        )
+        raise PoorResponse(response.status_code, json.loads(response.text), request)

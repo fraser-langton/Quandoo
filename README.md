@@ -42,13 +42,15 @@ To get an [Agent](#agent) instance to Quandoo just provide the X-Quandoo-AuthTok
 
 
 ```python
-agent = quandoo.Agent(oauth_token, agent_id)
+import quandoo.Agent
+agent = quandoo.Agent.Agent(oauth_token, agent_id)
 ```
 
 To get a test [Agent](#agent) instance be sure to use your test credentials
 
 ```python
-agent_test = quandoo.Agent(oauth_token_test, agent_id_test, test=True)
+import quandoo.Agent
+agent_test = quandoo.Agent.Agent(oauth_token_test, agent_id_test, test=True)
 ```
 
 # Usage
