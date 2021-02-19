@@ -17,11 +17,11 @@ class Agent(PrettyClass):
         "X-Quandoo-AuthToken": None
     }
 
-    def __init__(self, oauth_token=None, agent_id=None, test=False):
+    def __init__(self, oauth_token=None, agent_id=None, test=False, url=None):
         self.oauth_token = oauth_token
         self.agent_id = agent_id
 
-        self.url = f'{config.base_url_test if test else config.base_url}/{config.version}'
+        self.url = url if url else f'{config.base_url_test if test else config.base_url}/{config.version}'
 
         self.headers["X-Quandoo-AuthToken"] = oauth_token
 
