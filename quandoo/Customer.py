@@ -14,12 +14,12 @@ class Customer(QuandooModel):
 
         super().__init__(data)
 
-    def to_json(self):
+    def to_json(self, locale_=None, country=None):
         return {
             "firstName": self.firstName,
             "lastName": self.lastName,
             "emailAddress": self.email,
             "phoneNumber": self.phoneNumber,
-            "locale": locale.getdefaultlocale()[0],
-            "country": locale.getdefaultlocale()[0][-2:]
+            "locale": locale_ if locale_ else locale.getdefaultlocale()[0],
+            "country": country if country else locale.getdefaultlocale()[0][-2:]
         }

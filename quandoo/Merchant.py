@@ -39,12 +39,10 @@ class Merchant(QuandooModel):
             params["modifiedUntil"] = modified_until.get_urldt()
 
         request = f"{self.agent.url}/merchants/{self.id}/customer"
-        response = requests.get(request, headers=self.agent.headers, params=params)
+        response = self.agent.make_request("GET", request, params=params)
+        # response = requests.get(request, headers=self.agent.headers, params=params)
 
-        if response.status_code == 200:
-            return [Customer(i, self.agent) for i in json.loads(response.text)["result"]]
-        print(request)
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        return [Customer(i, self.agent) for i in json.loads(response.text)["result"]]
 
     def get_reservations(self, offset=0, limit=100, earliest=None, latest=None):
         params = {
@@ -57,12 +55,10 @@ class Merchant(QuandooModel):
             params["latest"] = latest.get_urldt()
 
         request = f"{self.agent.url}/merchants/{self.id}/reservations"
-        response = requests.get(request, headers=self.agent.headers, params=params)
+        response = self.agent.make_request("GET", request, params=params)
+        # response = requests.get(request, headers=self.agent.headers, params=params)
 
-        if response.status_code == 200:
-            return [Reservation(i, self.agent) for i in json.loads(response.text)["reservations"]]
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        return [Reservation(i, self.agent) for i in json.loads(response.text)["reservations"]]
 
     def get_available_times(self, pax: int, qdt: QuandooDatetime, duration=2, area_id=None):
         params = {
@@ -75,12 +71,10 @@ class Merchant(QuandooModel):
             params["areaId"] = area_id
 
         request = f"{self.agent.url}/merchants/{self.id}/availabilities/{qdt.datetime.strftime('%Y-%m-%d')}/times"
-        response = requests.get(request, headers=self.agent.headers, params=params)
+        response = self.agent.make_request("GET", request, params=params)
+        # response = requests.get(request, headers=self.agent.headers, params=params)
 
-        if response.status_code == 200:
-            return [QuandooDatetime.parse_str_qdt(i["dateTime"]) for i in json.loads(response.text)["timeSlots"]]
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        return [QuandooDatetime.parse_str_qdt(i["dateTime"]) for i in json.loads(response.text)["timeSlots"]]
 
     def is_available(self, pax: int, qdt: QuandooDatetime, duration=2, area_id=None):
         return qdt in self.get_available_times(pax, qdt, duration, area_id)
@@ -92,12 +86,10 @@ class Merchant(QuandooModel):
         }
 
         request = f"{self.agent.url}/merchants/{self.id}/reviews"
-        response = requests.get(request, headers=self.agent.headers, params=params)
+        response = self.agent.make_request("GET", request, params=params)
+        # response = requests.get(request, headers=self.agent.headers, params=params)
 
-        if response.status_code == 200:
-            return json.dumps(json.loads(response.text), indent=4)
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        return json.dumps(json.loads(response.text), indent=4)
 
     def create_reservation(self, customer, pax: int, qdt: QuandooDatetime, area_id=None, order_id=None, extra_info=None, reservation_tags=[]):
         data = {
@@ -123,12 +115,10 @@ class Merchant(QuandooModel):
             data["reservation"]['reservationTags'] = reservation_tags
 
         request = f"{self.agent.url}/reservations"
-        response = requests.put(request, headers=self.agent.headers, json=data)
+        response = self.agent.make_request("PUT", request, data=data)
+        # response = requests.put(request, headers=self.agent.headers, json=data)
 
-        if response.status_code == 200:
-            return NewReservation(json.loads(response.text), self.agent)
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        return NewReservation(json.loads(response.text), self.agent)
 
     def create_reservation_enquiry(self, customer, pax: int, start_qdt: QuandooDatetime, end_qdt: QuandooDatetime, message: str):
         data = {
@@ -148,18 +138,14 @@ class Merchant(QuandooModel):
         }
 
         request = f"{self.agent.url}/reservation-enquiries"
-        response = requests.put(request, headers=self.agent.headers, json=data)
+        response = self.agent.make_request("PUT", request, data=data)
+        # response = requests.put(request, headers=self.agent.headers, json=data)
 
-        if response.status_code == 201:
-            return NewReservationEnquiry(json.loads(response.text), self.agent)
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        return NewReservationEnquiry(json.loads(response.text), self.agent)
 
     def get_reservation_tags(self):
         request = f"{self.agent.url}/merchants/{self.id}/reservation_tags"
-        response = requests.put(request, headers=self.agent.headers)
+        response = self.agent.make_request("GET", request)
+        # response = requests.put(request, headers=self.agent.headers)
 
-        if response.status_code == 200:
-            return json.dumps(json.loads(response.text), indent=4)
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        return json.dumps(json.loads(response.text), indent=4)

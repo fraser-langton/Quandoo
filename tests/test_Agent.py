@@ -5,7 +5,7 @@ from .conftest import AUTH_TOKEN, AGENT_ID, MERCHANT_ID
 
 
 class TestAgent(unittest.TestCase):
-    agent = Agent(AUTH_TOKEN, AGENT_ID, test=True, url='https://test-9250-api.quandoo.com')
+    agent = Agent(AUTH_TOKEN, AGENT_ID)
 
     def test_get_merchant(self):
         merchant = self.agent.get_merchant(MERCHANT_ID)
@@ -26,4 +26,3 @@ class TestAgent(unittest.TestCase):
 
     def test_merchants(self):
         pass
-

@@ -5,7 +5,7 @@ import requests
 from . import config
 from .QuandooModel import PrettyClass
 from .Merchant import Merchant
-from .Error import PoorResponse
+from .Error import PoorResponse, APIException
 from .Customer import Customer
 from .Reservation import Reservation
 from .ReservationEnquiry import ReservationEnquiry
@@ -25,47 +25,52 @@ class Agent(PrettyClass):
 
         self.headers["X-Quandoo-AuthToken"] = oauth_token
 
+    def make_request(self, method, url, params=None, data=None):
+        response = requests.request(
+            method=method, url=url, headers=self.headers, params=params, json=data
+        )
+
+        if 200 <= response.status_code < 300:
+            return response
+
+        if response.status_code == 404:
+            res_text = {'errorType': 'ERROR', 'errorMessage': 'Not found'}
+        else:
+            res_text = json.loads(response.text)
+
+        raise PoorResponse(response.status_code, res_text, url)
+
     def get_merchant(self, merchant_id):
         request = f"{self.url}/merchants/{merchant_id}"
-        response = requests.get(request, headers=self.headers)
+        response = self.make_request("GET", request)
+        # response = requests.get(request, headers=self.headers)
 
-        if response.status_code == 200:
-            return Merchant(json.loads(response.text), self)
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        return Merchant(json.loads(response.text), self)
 
     def get_customer(self, customer_id):
         request = f"{self.url}/customers/{customer_id}"
-        response = requests.get(request, headers=self.headers)
+        response = self.make_request("GET", request)
+        # response = requests.get(request, headers=self.headers)
 
-        if response.status_code == 200:
-            return Customer(json.loads(response.text), self)
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        return Customer(json.loads(response.text), self)
 
     def get_reservation(self, reservation_id):
         request = f"{self.url}/reservations/{reservation_id}"
-        response = requests.get(request, headers=self.headers)
+        response = self.make_request("GET", request)
+        # response = requests.get(request, headers=self.headers)
 
-        if response.status_code == 200:
-            return Reservation(json.loads(response.text), self)
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        return Reservation(json.loads(response.text), self)
 
     def get_reservation_enquiry(self, reservation_enquiry_id):
         request = f"{self.url}/reservation-enquiries/{reservation_enquiry_id}"
-        response = requests.get(request, headers=self.headers)
+        response = self.make_request("GET", request)
+        # response = requests.get(request, headers=self.headers)
 
-        if response.status_code == 200:
-            return ReservationEnquiry(json.loads(response.text), self)
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        return ReservationEnquiry(json.loads(response.text), self)
 
     def merchants(self, params=None):
         request = f"{self.url}/merchants"
-        response = requests.get(request, headers=self.headers, params=params)
+        response = self.make_request("GET", request)
+        # response = requests.get(request, headers=self.headers, params=params)
 
-        if response.status_code == 200:
-            return [Merchant(i, self) for i in json.loads(response.text)['merchants']]
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        return [Merchant(i, self) for i in json.loads(response.text)['merchants']]

@@ -26,22 +26,18 @@ class ReservationEnquiry(QuandooModel):
             "status": new_status
         }
         request = f"{self.agent.url}/reservation-enquiries/{self.id}"
-        response = requests.patch(request, headers=self.agent.headers, json=data)
+        response = self.agent.make_request('PATCH', data=data)
+        # response = requests.patch(request, headers=self.agent.headers, json=data)
 
-        if response.status_code == 200:
-            self.status = new_status
-            return
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        self.status = new_status
+        return
 
     def get_messages(self):
         request = f"{self.agent.url}/reservation-enquiries/{self.id}/messages"
-        response = requests.get(request)
+        response = self.agent.make_request("GET", request)
+        # response = requests.get(request)
 
-        if response.status_code == 200:
-            return [Message(i) for i in json.loads(response.text)["messages"]]
-
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
+        return [Message(i) for i in json.loads(response.text)["messages"]]
 
 
 class NewReservationEnquiry(QuandooModel):

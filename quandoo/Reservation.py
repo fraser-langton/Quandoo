@@ -64,15 +64,14 @@ class Reservation(QuandooModel):
             data["reservation"]['reservationTags'] = reservation_tags
 
         request = f"{self.agent.url}/reservations/{self.id}"
-        response = requests.patch(request, headers=self.agent.headers, json=data)
+        response = self.agent.make_request("PATCH", data=data)
+        # response = requests.patch(request, headers=self.agent.headers, json=data)
 
-        if response.status_code == 200:
-            # TO DO
-            # Change instance variables - by new fetch or local change?
-            # new fetch is slower vs local change needs to re calc endTime
-            return
+        # TO DO
+        # Change instance variables - by new fetch or local change?
+        # new fetch is slower vs local change needs to re calc endTime
+        return
 
-        raise PoorResponse(response.status_code, json.loads(response.text), request)
 
     def cancel(self):
         self._update(new_status="CUSTOMER_CANCELED")
