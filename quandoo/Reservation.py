@@ -64,7 +64,7 @@ class Reservation(QuandooModel):
             data["reservation"]['reservationTags'] = reservation_tags
 
         request = f"{self.agent.url}/reservations/{self.id}"
-        response = self.agent.make_request("PATCH", data=data)
+        response = self.agent.make_request("PATCH", request, data=data)
         # response = requests.patch(request, headers=self.agent.headers, json=data)
 
         # TO DO

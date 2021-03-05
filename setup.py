@@ -13,8 +13,8 @@ with open(path.join(path.abspath(path.dirname(__file__)), 'README.md'), encoding
 
 setup(
     name='Quandoo',
-    version='1.3.5',
-    description="A SDK for interacting with the Quandoo API, it is a work in progress",
+    version='1.3.7',
+    description="A Python library to access the Quandoo API (v1). Base functionality is covered and more peripheral features are being covered in due course.",
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/fraser-langton/Quandoo',
